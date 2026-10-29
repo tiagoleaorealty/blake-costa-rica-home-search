@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blake's Home Search</title>
+<meta name="description" content="Homes picked for Blake by Tiago Leao, KRAIN Luxury Real Estate. Gated communities in Guanacaste, Costa Rica, grouped by beach.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Hanken+Grotesk:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: green masthead with photo mosaic bleeding into the page, coast map + area index, then one chapter per beach with community groups of large photo cards */
+:root{
+  --cream:#eee8e0;
+  --paper:#f6f2ec;
+  --green:#2d422d;
+  --green-deep:#243624;
+  --orange:#d37234;
+  --sage:#b1b7a9;
+  --ink:#1d261d;
+  --muted:#5d675a;
+  --rule:#cfcabd;
+  --serif:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
+  --sans:"Hanken Grotesk","Neue Haas Grotesk Display Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --gutter:max(20px,env(safe-area-inset-left,0px));
+  --gutter-r:max(20px,env(safe-area-inset-right,0px));
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;color-scheme:light}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;font-weight:400;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter-r)}
+.label{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase}
+.serif{font-family:var(--serif)}
+:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+
+/* ---------- Masthead ---------- */
+.mast{background:var(--green);color:var(--cream);padding-bottom:180px;position:relative}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:22px;border-bottom:1px solid rgba(238,232,224,.18)}
+.wordmark{font-size:13px;font-weight:600;letter-spacing:.34em}
+.topline .label{color:var(--sage)}
+.hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:48px 72px;padding-block:72px 0;align-items:end}
+.hero .label{color:var(--sage);margin-bottom:28px;display:block}
+.hero h1{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(56px,9.5vw,132px);line-height:.9;letter-spacing:-.02em}
+.hero h1 em{font-style:italic;color:#e6d9c9}
+.hero .lead{margin:36px 0 0;max-width:46ch;font-size:17px;font-weight:300;line-height:1.7;color:#e2dcd2}
+.brief{margin:0;border-top:1px solid rgba(238,232,224,.3)}
+.brief div{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid rgba(238,232,224,.18)}
+.brief dt{color:var(--sage)}
+.brief dd{margin:0;font-family:var(--serif);font-size:24px;line-height:1.2}
+
+.mosaic{margin-top:-140px;position:relative;z-index:1}
+.mosaic .wrap{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;height:clamp(240px,34vw,460px)}
+.mosaic figure{margin:0;position:relative;overflow:hidden;background:var(--green-deep)}
+.mosaic img{width:100%;height:100%;object-fit:cover}
+.mosaic figcaption{position:absolute;left:14px;bottom:12px;color:#fff;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;text-shadow:0 1px 8px rgba(0,0,0,.45)}
+
+/* ---------- Coast ---------- */
+.coast{padding-block:110px 40px}
+.coast-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:56px 88px;align-items:start}
+.section-label{color:var(--orange);display:block;margin-bottom:18px}
+.coast h2{margin:0 0 18px;font-family:var(--serif);font-weight:400;font-size:clamp(38px,4.6vw,60px);line-height:1;letter-spacing:-.01em;color:var(--green)}
+.coast-intro{margin:0 0 32px;color:var(--muted);max-width:48ch}
+.map{width:100%;max-width:420px;height:auto;display:block}
+.map .ocean-label{font-family:var(--serif);font-style:italic;font-size:17px;fill:var(--muted)}
+.map .place{font-family:var(--sans);font-size:11.5px;font-weight:500;letter-spacing:.08em;fill:var(--green);text-transform:uppercase}
+.map .sub{font-family:var(--sans);font-size:10.5px;fill:var(--muted)}
+.map a:hover .place,.map a:focus .place{fill:var(--orange)}
+
+.index{list-style:none;margin:0;padding:0;border-top:1px solid var(--green)}
+.index a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;padding:22px 4px;border-bottom:1px solid var(--rule);text-decoration:none;transition:background .2s}
+.index a:hover{background:var(--paper)}
+.index .name{font-family:var(--serif);font-size:clamp(26px,2.8vw,34px);line-height:1.1;color:var(--green)}
+.index .feel{grid-column:1;font-size:14px;color:var(--muted)}
+.index .meta{grid-column:2;grid-row:1 / span 2;align-self:center;text-align:right;font-size:13px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.index .meta b{display:block;font-weight:500;font-size:15px}
+.index .arrow{color:var(--orange);margin-left:6px}
+
+/* ---------- Bar ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(238,232,224,.92);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px 32px;min-height:56px;flex-wrap:wrap;padding-block:8px}
+.jump{display:flex;gap:4px 26px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.jump::-webkit-scrollbar{display:none}
+.jump a{white-space:nowrap;text-decoration:none;font-size:13px;letter-spacing:.04em;color:var(--green);padding:6px 0;border-bottom:1px solid transparent}
+.jump a:hover{border-bottom-color:var(--green)}
+.jump a sup{font-size:10px;color:var(--muted);margin-left:3px;font-variant-numeric:tabular-nums}
+.show{display:flex;align-items:center;gap:18px;font-size:13px}
+.show .label{color:var(--muted);font-size:10.5px}
+.show button{font:inherit;font-size:13px;background:none;border:0;padding:6px 0;color:var(--muted);cursor:pointer;border-bottom:1px solid transparent}
+.show button[aria-pressed="true"]{color:var(--green);border-bottom-color:var(--orange)}
+.show button:hover{color:var(--green)}
+
+/* ---------- Beach chapters ---------- */
+.beach{padding-block:110px 20px;scroll-margin-top:60px}
+.chapter{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px 88px;align-items:end;padding-bottom:44px}
+.chapter .section-label{margin-bottom:22px}
+.chapter h2{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(48px,7.2vw,104px);line-height:.92;letter-spacing:-.02em;color:var(--green);text-wrap:balance}
+.chapter h2 em{font-style:italic}
+.chapter p{margin:0;max-width:52ch;font-size:16px;line-height:1.7}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:28px 0 0;border-top:1px solid var(--rule)}
+.facts div{padding:12px 0;border-bottom:1px solid var(--rule)}
+.facts div:nth-child(odd){padding-right:16px}
+.facts dt{color:var(--muted);font-size:10.5px;margin-bottom:2px}
+.facts dd{margin:0;font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--green)}
+
+.community{padding-top:40px}
+.community-head{display:flex;justify-content:space-between;align-items:baseline;gap:6px 24px;flex-wrap:wrap;border-top:1px solid var(--green);padding-top:14px;margin-bottom:26px}
+.community-head h3{margin:0;font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--green)}
+.community-head p{margin:0;font-size:14px;color:var(--muted);font-family:var(--serif);font-style:italic;font-size:18px}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:56px 36px}
+
+/* ---------- Cards ---------- */
+.card{display:flex;flex-direction:column;min-width:0}
+.card.feature{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:0 44px;align-items:center}
+.photo{position:relative;display:block;aspect-ratio:3/2;max-width:100%;overflow:hidden;background:var(--sage)}
+.photo img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.card:hover .photo img{transform:scale(1.035)}
+.photo .ph{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-size:24px;color:var(--green);padding:20px;text-align:center;background:linear-gradient(135deg,#c3c8bb,#a9b0a1)}
+.photo .no{position:absolute;z-index:2;left:0;top:0;background:var(--cream);color:var(--green);font-size:12px;font-weight:600;letter-spacing:.12em;padding:8px 12px;font-variant-numeric:tabular-nums}
+
+.info{padding-top:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card.feature .info{padding-top:0}
+.meta-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.meta-row .label{color:var(--muted);font-size:10.5px}
+.access{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.04em;color:var(--ink)}
+.access::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sage)}
+.access.walk::before{background:var(--orange)}
+.title-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px 20px;flex-wrap:wrap}
+.card h4{margin:0;font-family:var(--serif);font-weight:500;font-size:clamp(26px,2.4vw,32px);line-height:1.05;letter-spacing:-.005em;color:var(--ink)}
+.card.feature h4{font-size:clamp(30px,3.2vw,42px)}
+.price{font-size:17px;font-weight:500;letter-spacing:.01em;color:var(--green);font-variant-numeric:tabular-nums;white-space:nowrap}
+.specs{display:flex;flex-wrap:wrap;margin:0;padding:10px 0;list-style:none;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums}
+.specs li{padding:0 14px;border-left:1px solid var(--rule);line-height:1.5}
+.specs li:first-child{padding-left:0;border-left:0}
+.note{margin:0;font-size:15px;line-height:1.65;color:#34402f;max-width:56ch}
+.more{align-self:flex-start;margin-top:4px;display:inline-flex;gap:10px;align-items:center;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;color:var(--green);padding-bottom:4px;border-bottom:1px solid var(--green)}
+.more span{transition:transform .25s}
+.more:hover span{transform:translateX(4px)}
+.more:hover{color:var(--orange);border-bottom-color:var(--orange)}
+
+.empty{margin:24px 0 0;font-family:var(--serif);font-style:italic;font-size:20px;color:var(--muted)}
+
+/* ---------- Close ---------- */
+.close{margin-top:110px;background:var(--green);color:var(--cream)}
+.close .wrap{padding-block:96px 40px}
+.close-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:48px 88px;align-items:end;padding-bottom:64px;border-bottom:1px solid rgba(238,232,224,.18)}
+.close h2{margin:0 0 24px;font-family:var(--serif);font-weight:400;font-size:clamp(44px,6vw,84px);line-height:.95;letter-spacing:-.02em}
+.close h2 em{font-style:italic;color:#e6d9c9}
+.close p{margin:0;max-width:50ch;font-weight:300;font-size:17px;line-height:1.7;color:#e2dcd2}
+.contact{margin:0;border-top:1px solid rgba(238,232,224,.3)}
+.contact div{display:grid;grid-template-columns:100px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid rgba(238,232,224,.18)}
+.contact dt{color:var(--sage)}
+.contact dd{margin:0;font-size:15px;word-break:break-word}
+.contact a{text-decoration:none;border-bottom:1px solid rgba(238,232,224,.35)}
+.contact a:hover{border-bottom-color:var(--orange)}
+.foot{display:flex;justify-content:space-between;gap:12px 32px;flex-wrap:wrap;padding-top:24px;font-size:12px;color:var(--sage)}
+.foot .wordmark{font-size:11px;color:var(--cream)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){
+  .hero,.coast-grid,.chapter,.close-grid{grid-template-columns:1fr}
+  .hero{padding-block:48px 0}
+  .card.feature{grid-template-columns:1fr}
+  .card.feature .info{padding-top:20px}
+  .map{max-width:360px}
+}
+@media (max-width:720px){
+  .topline .label{display:none}
+  .mast{padding-bottom:120px}
+  .mosaic{margin-top:-90px}
+  .mosaic .wrap{grid-template-columns:1fr 1fr;height:auto}
+  .mosaic figure{aspect-ratio:4/3}
+  .mosaic figure:first-child{grid-column:1 / -1;aspect-ratio:3/2}
+  .grid{grid-template-columns:1fr;gap:56px}
+  .brief div,.contact div{grid-template-columns:96px 1fr}
+  .beach{padding-block:80px 10px}
+  .coast{padding-block:80px 20px}
+  .bar .wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:2px}
+  .show{flex-wrap:wrap;gap:4px 16px}
+  .jump{order:2}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="topline">
+      <span class="wordmark">SOLDBYTIAGO</span>
+      <span class="label">KRAIN Luxury Real Estate · Tamarindo</span>
+    </div>
+    <div class="hero">
+      <div>
+        <span class="label">Private home search · Guanacaste, Costa Rica · October 2026</span>
+        <h1>Blake's<br><em>Home Search</em></h1>
+        <p class="lead">Blake, this is a first round of homes I picked out for you. It's not everything on the market. The goal is to get a feel for what you like before you get here. Every one is in a gated community with security, a walk or a short golf cart ride from the beach. They're grouped by beach so you can compare the areas. A few are listed above $1M. I kept them in because they fit well and there's usually room to negotiate. Each home is numbered, so you can just send me the numbers you like.</p>
+      </div>
+      <dl class="brief">
+        <div><dt class="label">Budget</dt><dd>Around $1M</dd></div>
+        <div><dt class="label">Setting</dt><dd>Gated, with security</dd></div>
+        <div><dt class="label">Beach</dt><dd>Walk or golf cart</dd></div>
+        <div><dt class="label">Shortlist</dt><dd id="brief-count">25 homes, 5 beaches</dd></div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="mosaic" aria-hidden="true">
+  <div class="wrap" id="mosaic"></div>
+</div>
+
+<section class="coast" aria-labelledby="coast-h">
+  <div class="wrap coast-grid">
+    <div>
+      <span class="label section-label">The coast</span>
+      <h2 id="coast-h">Five beaches, one stretch of coast</h2>
+      <p class="coast-intro">All five areas sit within about 30 km of each other on the north Pacific coast, and all are roughly an hour from Liberia International Airport.</p>
+      <svg class="map" viewBox="0 0 420 400" role="img" aria-labelledby="map-t">
+        <title id="map-t">Schematic map of the coast from Las Catalinas south to Hacienda Pinilla, with Liberia airport inland</title>
+        <rect x="0" y="0" width="420" height="400" fill="#e4dfd5"/>
+        <path d="M0 0 H232 C214 34 196 58 170 82 C150 99 136 108 131 122 C127 134 121 141 116 150 C113 157 118 162 114 170 C108 184 104 198 99 214 C93 233 88 248 86 260 C85 268 83 274 79 288 C75 302 72 320 68 344 C66 360 64 380 62 400 H0 Z" fill="#cfd4c8"/>
+        <path d="M232 0 C214 34 196 58 170 82 C150 99 136 108 131 122 C127 134 121 141 116 150 C113 157 118 162 114 170 C108 184 104 198 99 214 C93 233 88 248 86 260 C85 268 83 274 79 288 C75 302 72 320 68 344 C66 360 64 380 62 400" fill="none" stroke="#2d422d" stroke-width="1.2"/>
+        <text class="ocean-label" x="22" y="236">Pacific</text>
+        <text class="ocean-label" x="22" y="256">Ocean</text>
+        <g stroke="#b1b7a9" stroke-width="1" stroke-dasharray="3 4" fill="none">
+          <path d="M340 44 C300 90 240 120 136 124"/>
+          <path d="M340 44 C300 150 220 230 92 258"/>
+        </g>
+        <g>
+          <rect x="333" y="37" width="14" height="14" fill="#2d422d"/>
+          <text class="place" x="404" y="72" text-anchor="end">Liberia (LIR)</text>
+          <text class="sub" x="404" y="87" text-anchor="end">International airport</text>
+        </g>
+        <a href="#catalinas"><circle cx="134" cy="116" r="5" fill="#d37234"/><line x1="140" y1="116" x2="168" y2="116" stroke="#2d422d" stroke-width=".8"/><text class="place" x="174" y="120">Las Catalinas</text></a>
+        <a href="#flamingo"><circle cx="121" cy="146" r="5" fill="#d37234"/><line x1="127" y1="146" x2="168" y2="146" stroke="#2d422d" stroke-width=".8"/><text class="place" x="174" y="150">Flamingo &amp; Brasilito</text></a>
+        <a href="#conchal"><circle cx="115" cy="173" r="5" fill="#d37234"/><line x1="121" y1="173" x2="168" y2="173" stroke="#2d422d" stroke-width=".8"/><text class="place" x="174" y="177">Playa Conchal</text></a>
+        <a href="#tamarindo"><circle cx="89" cy="262" r="5" fill="#d37234"/><line x1="95" y1="262" x2="140" y2="262" stroke="#2d422d" stroke-width=".8"/><text class="place" x="146" y="266">Tamarindo &amp; Langosta</text></a>
+        <a href="#pinilla"><circle cx="77" cy="300" r="5" fill="#d37234"/><line x1="83" y1="300" x2="140" y2="300" stroke="#2d422d" stroke-width=".8"/><text class="place" x="146" y="304">Hacienda Pinilla</text></a>
+        <text class="sub" x="404" y="388" text-anchor="end">Schematic, not to scale</text>
+        <line x1="300" y1="372" x2="404" y2="372" stroke="#2d422d" stroke-width=".8"/>
+        <text class="sub" x="18" y="388">N ↑</text>
+      </svg>
+    </div>
+    <div>
+      <ul class="index" id="index"></ul>
+    </div>
+  </div>
+</section>
+
+<nav class="bar" aria-label="Beaches and filters">
+  <div class="wrap">
+    <div class="jump" id="jump"></div>
+    <div class="show" role="group" aria-label="Filter homes">
+      <span class="label">Show</span>
+      <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+      <button type="button" id="f-walk" data-f="walk" aria-pressed="false">Walk to beach</button>
+      <button type="button" id="f-under" data-f="under" aria-pressed="false">Under $1M</button>
+    </div>
+  </div>
+</nav>
+
+<main id="beaches"></main>
+
+<footer class="close">
+  <div class="wrap">
+    <div class="close-grid">
+      <div>
+        <h2>See you <em>next week</em></h2>
+        <p>Before you land, send me the numbers that stand out, and the ones you'd skip. That tells me what you're drawn to, and I'll use it to line up tours for your visit and bring in other homes that fit. Once you've seen a few, I'll walk you through where each one sits on price and what I think we can negotiate.</p>
+      </div>
+      <dl class="contact">
+        <div><dt class="label">Agent</dt><dd>Tiago Leao</dd></div>
+        <div><dt class="label">Brokerage</dt><dd>KRAIN Luxury Real Estate</dd></div>
+        <div><dt class="label">Email</dt><dd><a href="mailto:tiago@kraincostarica.com">tiago@kraincostarica.com</a></dd></div>
+        <div><dt class="label">Web</dt><dd><a href="https://soldbytiago.com" target="_blank" rel="noopener">soldbytiago.com</a></dd></div>
+      </dl>
+    </div>
+    <div class="foot">
+      <span class="wordmark">SOLDBYTIAGO</span>
+      <span>Prices and details are as listed in October 2026 and may change. Drive times and beach access notes are approximate.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const P = "https://api.cotality.com/trestle/Media/Property/";
+const L = "https://krainrealestate.com/home-search/listings/";
+
+const BEACHES = [
+  {
+    id:"tamarindo", name:"Tamarindo <em>&amp; Langosta</em>", plain:"Tamarindo & Langosta", short:"Tamarindo",
+    feel:"Lively beach town", lir:"About 1 hr 10 min",
+    intro:"The most established beach town in Guanacaste. Restaurants, shops, surf, groceries, banks and medical clinics are all here, with private schools close by. Playa Langosta is the quieter south end, a short walk from town.",
+    communities:[
+      {name:"Playa Langosta", note:"The quiet end of Tamarindo, steps from the sand"},
+      {name:"Central Tamarindo", note:"Walk to the beach, restaurants and shops"},
+      {name:"Residencia La Vista", note:"Up the hill, with Club Diriá beach access in town"},
+      {name:"Tamarindo Park", note:"Newer gated community, 24-hour security"}
+    ]
+  },
+  {
+    id:"pinilla", name:"Hacienda <em>Pinilla</em>", plain:"Hacienda Pinilla", short:"Hacienda Pinilla",
+    feel:"Quiet resort community", lir:"About 1 hr 20 min",
+    intro:"A large gated resort community about 20 minutes south of Tamarindo, with 24-hour security at the gates, an 18-hole golf course, a beach club and the JW Marriott. It's quiet and residential. You drive into Tamarindo for dining and errands.",
+    communities:[
+      {name:"Los Malinches", note:"Established Spanish colonial enclave with its own gym"},
+      {name:"Bosques de Pinilla", note:"Newer villas set against the forest"}
+    ]
+  },
+  {
+    id:"conchal", name:"Playa <em>Conchal</em>", plain:"Playa Conchal", short:"Conchal",
+    feel:"Full-service resort", lir:"About 50 min",
+    intro:"Reserva Conchal is a gated resort community built around Playa Conchal, one of the calmest, clearest beaches on the coast. Owners get the beach club, a Robert Trent Jones II golf course, gyms, tennis and pickleball, and dining at the W and Westin hotels inside the gates. Most homes are a golf cart or shuttle ride to the sand.",
+    communities:[
+      {name:"Bougainvillea", note:"Golf course setting with its own clubhouse and pools"},
+      {name:"Carao", note:"Larger condos with elevators and a renovated club"},
+      {name:"Roble Sabana", note:"Newer condos with ocean views"},
+      {name:"Sanara", note:"New single-level homes with access to Reserva Conchal"}
+    ]
+  },
+  {
+    id:"flamingo", name:"Flamingo <em>&amp; Brasilito</em>", plain:"Flamingo & Brasilito", short:"Flamingo",
+    feel:"Marina and residential", lir:"About 50 min",
+    intro:"Playa Flamingo has a white sand beach and a new marina, with a smaller, quieter feel than Tamarindo. Mar Vista is the gated community in the hills above, with 24-hour security, a clubhouse, restaurant, infinity pool, gym and tennis. Brasilito is the local village between Flamingo and Conchal.",
+    communities:[
+      {name:"Mar Vista", note:"Gated hillside community with a clubhouse and ocean views"},
+      {name:"Playa Flamingo", note:"Condos on the hill above the beach and marina"},
+      {name:"Catalina Cove, Brasilito", note:"125-acre gated community between Flamingo and Conchal"}
+    ]
+  },
+  {
+    id:"catalinas", name:"Las <em>Catalinas</em>", plain:"Las Catalinas", short:"Las Catalinas",
+    feel:"Walkable, car-free town", lir:"About 50 min",
+    intro:"A car-free beach town north of Flamingo, planned around walking. The beach, beach club, restaurants, shops and miles of trails are all on foot. It's the most walkable option here and the most compact.",
+    communities:[
+      {name:"Las Catalinas", note:"The town center and its newest terraced section"}
+    ]
+  }
+];
+
+/* access: "walk" or "cart" */
+const HOMES = [
+  /* Tamarindo & Langosta */
+  {beach:"tamarindo", comm:"Playa Langosta", name:"Peninsula Condo", price:815000, specs:["3 bd","2.5 ba","2,734 sq ft","Built 2018"], access:"walk",
+   note:"About 200 m to the beach and 800 m to town. Full-length private balcony, two pools, gym, two underground parking spaces and storage. Furnished.",
+   img:"PHOTO-jpeg/1191245641/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5MDEyNTQzNA/gXcx6OOqepg9TL5groQtcGW8rk8h-DuY32KPdsLrngQ",
+   url:"8585422757415417422-Peninsula-Condo-Playa-Langosta-Tamarindo"},
+  {beach:"tamarindo", comm:"Playa Langosta", name:"Villa Cerca del Mar 5", price:769000, specs:["3 bd","3.5 ba","2,196 sq ft","Built 2003"], access:"walk",
+   note:"Langosta Beach is across the street. Townhome with its own private pool and courtyard. Every bedroom en suite, one on the ground floor. Furnished.",
+   img:"PHOTO-jpeg/1114437180/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5MTg1MzQxNQ/o9UyjAeNKjZkU-VYeCGj7EH5RmBE6cPFy6J_lk_Jwbk",
+   url:"8585915875344007708-Villa-Cerca-del-Mar-5-Santa-Cruz"},
+  {beach:"tamarindo", comm:"Central Tamarindo", name:"Garden Pool Home", price:779000, specs:["3 bd","3 ba","1,722 sq ft","Built 2022"], access:"cart",
+   note:"Gated neighborhood with paved streets and underground power, walking distance to town. Private pool, main-floor primary suite and an open office upstairs.",
+   img:"PHOTO-jpeg/1146391865/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NjA2NTAxMA/kt1ZwOxEwRlA0ObFfyXHg8glyhCaDiuQnOBUcuneZxw",
+   url:"8585972564616282142-Cozy-Home-Minutes-From-the-Beach-Santa-Cruz"},
+  {beach:"tamarindo", comm:"Central Tamarindo", name:"La Perla 134", price:1075000, specs:["3 bd","3 ba","2,153 sq ft","Built 2005"], access:"walk",
+   note:"Third-floor corner unit with views over Tamarindo and Playa Grande. Two blocks to the beach. Gated entrance with guard, underground parking, pool and gym. Furnished.",
+   img:"PHOTO-jpeg/1159292140/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NTk3ODQ4NQ/QBSdIZx9KgjsrPtUOmCaEaGzmIbXSCrlvlcElfny6uA",
+   url:"8585145268327173914-La-Perla-134-Tamarindo-Ocean-Views"},
+  {beach:"tamarindo", comm:"Central Tamarindo", name:"La Perla 143", price:1099000, specs:["3 bd","3 ba","2,153 sq ft","Built 2005"], access:"walk",
+   note:"Fourth-floor southwest corner unit facing Tamarindo Beach and the sunset, with three terraces. Same building as 134, two blocks to the beach. Furnished.",
+   img:"PHOTO-jpeg/1151758960/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NjA2NDkwNQ/0t4tSSb8bZbn0N1CHQ3IdCwQAjNTiOjhyT86arjNXyo",
+   url:"8585854071972836425-La-Perla-143-Tamarindo-Ocean-Views"},
+  {beach:"tamarindo", comm:"Residencia La Vista", name:"La Vista C101", price:889000, specs:["3 bd","3.5 ba","1,959 sq ft","Built 2023"], access:"cart",
+   note:"Estuary, ocean and sunset views from above town. Club Diriá membership includes beach access and parking on Tamarindo Beach plus golf at Rancho Tamarindo.",
+   img:"PHOTO-jpeg/1193116653/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5Mjg5MDMxMg/uYDm6fU3Ne7SntJrHISM15Z3i0yeOdWqH-1127K4Xdo",
+   url:"8585322134656160715-La-Vista-C101-By-Diria"},
+  {beach:"tamarindo", comm:"Residencia La Vista", name:"La Vista B-6", price:1100000, specs:["2 bd + office","3.5 ba","1,701 sq ft","Built 2023"], access:"cart",
+   note:"Ocean views and four balconies. Over $164,000 in upgrades, including a custom kitchen and an outdoor kitchen. On the main pool level. Furnished.",
+   img:"PHOTO-jpeg/1189619253/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4ODY1NjU4Mw/IuEZeP3urCFsuB4QxcamfpdLImM_zXzKDjrnxvQDBvY",
+   url:"8585923853126672289-Calle-Soles-La-Vista-B-6"},
+  {beach:"tamarindo", comm:"Tamarindo Park", name:"Casa Bromelia", price:970000, specs:["3 bd","3.5 ba","3,810 sq ft","Built 2023","HOA $225/mo"], access:"cart",
+   note:"Private pool, garage and warm wood finishes. The community has tennis and paddle courts, a dog park, playground and trails, with a beach club planned. Furnished.",
+   img:"PHOTO-Jpeg/1119778537/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5MDgxNjgzMQ/UhjtExYeGXfQKM90XtT1iB3AOdJg41P3MtyqTLvtB7s",
+   url:"8585563641780214417-Park-Casa-Bromelia-Lot-51-Santa-Cruz"},
+  {beach:"tamarindo", comm:"Tamarindo Park", name:"Casa Arcana", price:1100000, specs:["3 bd","3.5 ba","3,900+ sq ft","Built 2023"], access:"cart",
+   note:"Private pool, enclosed two-car garage and a chef's kitchen. Sold furnished, and the sale includes a 2022 Tesla. 24-hour security at the gate.",
+   img:"PHOTO-jpeg/1176339209/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NTI4NzMwNQ/h6LNP-b0aiRbwVLVdSJ1fm6EllnIZYD9_qHE2_ZbJQo",
+   url:"8585475755844005329-Casa-Arcana-Playa-Tamarindo"},
+
+  /* Hacienda Pinilla */
+  {beach:"pinilla", comm:"Los Malinches", name:"Los Malinches 22", price:799000, specs:["3 bd","4 ba","4,822 sq ft","Built 2008"], access:"cart",
+   note:"Large two-level home by architect Ronald Zürcher. Screened terraces on both floors, hardwood floors and caña brava ceilings. Refurbished around 2021, sold furnished.",
+   img:"PHOTO-Jpeg/1157715532/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4OTQwMTgxNg/xDuDcfxndjtp0U87caGp7on0TwZygIbawsK5LDC5rJ8",
+   url:"8585255144182424339-22-Los-Malinches"},
+  {beach:"pinilla", comm:"Bosques de Pinilla", name:"Villa Tropical Dawn", price:1050000, specs:["4 bd","5 ba","3,692 sq ft","Built 2024"], access:"cart",
+   note:"Newer two-level villa. Every bedroom en suite, including a kids' bunk room, and a living room on each floor. Pool, garage and fiber internet. Furnished.",
+   img:"PHOTO-jpeg/1157635395/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NjA0NDI3OQ/NB3w-T_hDrrV0292Sj7phWh2q6z2wFXNupknAJbIW6Q",
+   url:"8585831763374179159-Bosques-de-Pinilla-Hacienda-Pinilla"},
+
+  /* Playa Conchal */
+  {beach:"conchal", comm:"Roble Sabana", name:"Roble Sabana 301", price:799000, specs:["2 bd","2 ba","1,152 sq ft","Built 2015"], access:"cart",
+   note:"Third-floor condo with ocean views, elevator and A/C. Contemporary finishes and a large terrace. Furnished.",
+   img:"PHOTO-jpeg/1191328641/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5MDczMDIzMA/HrqI_JL9TbCb2A5mygRzzMI3mjE21rXf_S3RT4ZRIWQ",
+   url:"8585318897600506184-Roble-Sabana-301-Reserva-Conchal"},
+  {beach:"conchal", comm:"Bougainvillea", name:"Bougainvillea 1204", price:825000, specs:["3 bd","2 ba","1,679 sq ft","Built 2008"], access:"cart",
+   note:"Recently renovated, single level. Ocean, mountain and golf course views from a large shaded terrace. Furnished.",
+   img:"PHOTO-jpeg/1159859979/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NTk3ODQ1OQ/c1hBgDqcg6sLhOJAPA9jAndjNGbJxMSnGiC91pCsDaA",
+   url:"8585704102249616966-Bougainvillea-1204-Reserva-Conchal"},
+  {beach:"conchal", comm:"Bougainvillea", name:"Bougainvillea 4105", price:899000, specs:["3 bd","4 ba","approx. 2,300 sq ft","Built 2002"], access:"cart",
+   note:"Ground floor with a double-wide patio onto the lawn, plus ocean and golf views. Every bedroom en suite. Clubhouse, two pools and Westin pool access. Furnished.",
+   img:"PHOTO-jpeg/1190396296/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4OTQ4MjI3NA/eccB750uQx2UbW0gYS1pT5tS4joIiHy5n2QsE8QTt7k",
+   url:"8585520753932885279-Bougainvillea-4105"},
+  {beach:"conchal", comm:"Carao", name:"Carao T3-1", price:988000, specs:["3 bd","3.5 ba","2,669 sq ft","Built 2005","HOA $1,016/mo"], access:"cart",
+   note:"Remodeled, every bedroom en suite. Two titled parking spaces, elevator, generators, infinity pool and jacuzzi. Furnished.",
+   img:"PHOTO-jpeg/1149399366/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5MDU1NzUyNQ/1eHCDbPPeBtlHJvb7wEiWOL1PXrbOKa4KFUhK0QF2UI",
+   url:"8585709056912219044-Carao-T3-1-Playa-Conchal"},
+  {beach:"conchal", comm:"Carao", name:"Carao T5-1", price:1100000, specs:["3 bd","3.5 ba","2,691 sq ft","Built 2007","HOA $985/mo"], access:"cart",
+   note:"Large primary suite with a sitting area. Elevator, covered parking and a renovated community club with pool and BBQ. Furnished.",
+   img:"PHOTO-jpeg/1189584056/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5Mjg5MDM0Mw/ZEA9ddbRA3Glok4LpY5z_pRDIljBTjBcZHVBdqUmZ-E",
+   url:"8585459753404594211-Cabo-Velas-Reserva-Conchal-Santa-Cruz-Carao-T5-1-Cabo-Velas-Santa-Cruz"},
+  {beach:"conchal", comm:"Sanara", name:"Sanara Lot 51", price:1199000, specs:["3 bd","3 ba","3,541 sq ft","New build","HOA under $500/mo"], access:"cart",
+   note:"New single-level home with a private pool on a 0.44-acre lot, 24/7 security and deeded access to Reserva Conchal amenities. A 4-bed version is $1,269,000.",
+   img:"PHOTO-jpeg/1177029923/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5MTU5NDE3Mg/BwkMDTGByK1IO4DOOK7cbV6eYRbv0qjc_e1Z1ge4FgE",
+   url:"8585714843497293728-Sanara-at-Reserva-Conchal-Lote-51-HOUSE-of-choice"},
+
+  /* Flamingo & Brasilito */
+  {beach:"flamingo", comm:"Mar Vista", name:"Casa Oasis, Dos Ríos 13", price:899000, specs:["5 bd","6 ba","2,799 sq ft","Built 2019"], access:"cart",
+   note:"A 3-bed main house plus a separate 2-bed guest house with its own kitchen. Private pool, solar panels and steel-frame construction. Furnished.",
+   img:"PHOTO-jpeg/1178211949/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5MjU0NDc2NA/dEkr5QKUK0IfUZ_gfM4Auuw0fKqQa_PyFM0eSSv30RE",
+   url:"8585279883305364053-Casa-Oasis-Dos-Rios-13-Mar-Vista-Playa-Flamingo"},
+  {beach:"flamingo", comm:"Mar Vista", name:"Twin Sisters", price:899500, specs:["Two 2 bd / 2 ba homes","approx. 3,200 sq ft","5,042 m² lot"], access:"cart",
+   note:"Two separate homes, each with its own pool and ocean and mountain views. Live in one and rent the other. Furnished.",
+   img:"PHOTO-Jpeg/1158692043/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4ODgyOTQ2NQ/IoMyemXiraICHb0hLTHUnFm57BzNyHkqR6w5P56I-GY",
+   url:"8585989435349494249-Twin-Sisters-Mar-Vista-Playa-Flamingo-Guanacaste-Costa-Rica"},
+  {beach:"flamingo", comm:"Mar Vista", name:"Mar Vista Ocean View Villa", price:1077500, specs:["3 bd","3 ba","approx. 4,300 sq ft","Built 2023","HOA $390/mo"], access:"cart",
+   note:"Contemporary villa with ocean views and a 15 m pool on a 5,000 m² lot, with room to add a guest house.",
+   img:"PHOTO-jpeg/1178697632/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NzEwMTI5OA/9NJ_LXMRkl7I8GFcR4vB8IWBCbD-yUuqXsmLiJjxpL0",
+   url:"8585560842674785045-Mar-Vista"},
+  {beach:"flamingo", comm:"Playa Flamingo", name:"Flamingo Towers 18", price:690000, specs:["2 bd","2.5 ba","1,841 sq ft","HOA $813/mo"], access:"cart",
+   note:"Corner unit with views of Playa Conchal and Brasilito Bay from two balconies. Two pools, secure parking and 24-hour gated security. Furnished.",
+   img:"PHOTO-jpeg/1155564705/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NzM2MDU1Ng/5S6ppiikyymVWi8lVHmGfrZ0VQhBwSAtOC79cKY5rEY",
+   url:"8585702905051585199-Flamingo-Towers-18"},
+  {beach:"flamingo", comm:"Playa Flamingo", name:"Flamingo Cove 8", price:889000, specs:["4 bd","2.5 ba","1,981 sq ft","Built 2000","HOA $948/mo incl. water"], access:"cart",
+   note:"Two-level home on the hill above Playa Flamingo, minutes from the marina, with wide Pacific views. Furnished.",
+   img:"PHOTO-Jpeg/1191028062/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4OTY5MzUxMA/xnEKGOUqT8HV011RGdHBinIZdnONBMmkpkmpGVJq89E",
+   url:"8585100721874635211-FLAMINGO-COVE-8-PLAYA-FLAMINGO"},
+  {beach:"flamingo", comm:"Catalina Cove, Brasilito", name:"Casa Avalon", price:675000, specs:["4 bd","3 ba","2,800 sq ft","Built 2023","1.48-acre lot"], access:"walk",
+   note:"Newer home with an L-shaped pool, office and two-car garage. Short walk to the beach and Brasilito, with room on the lot for two more structures.",
+   img:"PHOTO-Jpeg/1192661798/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc5MjQ1ODA5OQ/cQ3-j9TOPbHGeSq2P2RdaDZcHwrqJygSJmwZA8LouT8",
+   url:"8585636057303700552-Casa-Avalon-Brasilito"},
+
+  /* Las Catalinas */
+  {beach:"catalinas", comm:"Las Catalinas", name:"Terraced Flats 7512", price:649000, specs:["3 bd","3 ba","1,044 sq ft","Built 2023"], access:"walk",
+   note:"Ocean-view condo in the newest section of town with a covered terrace. Beach club access with lap, lounge and hot plunge pools. Furnished.",
+   img:"PHOTO-jpeg/1176904941/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NTIwMDgxNQ/mha2fUwLK18Of49M4ZRNUfHvIXsvphSgZAkk_oC2asw",
+   url:"8585402245586859851-Terraced-Flats-7512-Las-Catalinas"},
+  {beach:"catalinas", comm:"Las Catalinas", name:"Miraflores Flats 1234", price:1195000, specs:["3 bd","2 ba","1,539 sq ft"], access:"walk",
+   note:"In the heart of town, a short walk to the beach and plazas. Bunk room, dining for eight and a balcony with hanging chairs.",
+   img:"PHOTO-jpeg/1154516732/1/MzM2Ny8yMTY3LzE3/MTcvMTUyMTYvMTc4NjE1MTIxNQ/WPPWIEAEhzjJXRQxZ6gDOP4iadVoVjqcd67aSreQLR8",
+   url:"8585488208236834624-Miraflores-Flats-1234-Tempate"}
+];
+
+const money = n => n >= 1000000
+  ? "$" + (n/1000000).toFixed(2).replace(/0+$/,"").replace(/\.$/,"") + "M"
+  : "$" + Math.round(n/1000) + "K";
+const full = n => "$" + n.toLocaleString("en-US");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rangeOf = list => { const p = list.map(h => h.price); return money(Math.min(...p)) + " to " + money(Math.max(...p)); };
+
+/* order homes by beach, then community, then price, and number them */
+const ORDERED = [];
+BEACHES.forEach(b => b.communities.forEach(c => {
+  HOMES.filter(h => h.beach === b.id && h.comm === c.name).sort((x,y) => x.price - y.price).forEach(h => ORDERED.push(h));
+}));
+ORDERED.forEach((h,i) => h.no = String(i + 1).padStart(2,"0"));
+
+document.getElementById("brief-count").textContent = `${HOMES.length} homes, ${BEACHES.length} beaches`;
+
+/* mosaic: three hero photos */
+const pick = ["La Perla 143","Casa Oasis, Dos Ríos 13","Terraced Flats 7512"].map(n => HOMES.find(h => h.name === n));
+document.getElementById("mosaic").innerHTML = pick.map(h =>
+  `<figure><img src="${P + h.img}" alt="" onerror="this.remove()"><figcaption>${esc(h.comm)}</figcaption></figure>`).join("");
+
+/* coast index + jump nav */
+document.getElementById("index").innerHTML = BEACHES.map(b => {
+  const list = HOMES.filter(h => h.beach === b.id);
+  return `<li><a href="#${b.id}">
+    <span class="name">${esc(b.plain)}<span class="arrow" aria-hidden="true">→</span></span>
+    <span class="feel">${esc(b.feel)} · ${esc(b.lir.toLowerCase())} to LIR</span>
+    <span class="meta"><b>${list.length} homes</b>${rangeOf(list)}</span>
+  </a></li>`;
+}).join("");
+document.getElementById("jump").innerHTML = BEACHES.map(b =>
+  `<a href="#${b.id}">${esc(b.short)}<sup>${HOMES.filter(h => h.beach === b.id).length}</sup></a>`).join("");
+
+/* cards */
+function card(h, feature){
+  const access = h.access === "walk"
+    ? `<span class="access walk">Walk to beach</span>`
+    : `<span class="access">Golf cart to beach</span>`;
+  return `<article class="card${feature ? " feature" : ""}" data-walk="${h.access === "walk"}" data-under="${h.price < 1000000}">
+    <a class="photo" href="${L + h.url}" target="_blank" rel="noopener" aria-label="${esc(h.name)} listing">
+      <span class="ph" aria-hidden="true">${esc(h.comm)}</span>
+      <img src="${P + h.img}" alt="${esc(h.name)}, ${esc(h.comm)}" loading="lazy" onerror="this.remove()">
+      <span class="no">No. ${h.no}</span>
+    </a>
+    <div class="info">
+      <div class="meta-row">${access}</div>
+      <div class="title-row"><h4>${esc(h.name)}</h4><span class="price">${full(h.price)}</span></div>
+      <ul class="specs">${h.specs.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+      <p class="note">${esc(h.note)}</p>
+      <a class="more" href="${L + h.url}" target="_blank" rel="noopener">View listing <span aria-hidden="true">→</span></a>
+    </div>
+  </article>`;
+}
+
+/* chapters */
+document.getElementById("beaches").innerHTML = BEACHES.map(b => {
+  const list = HOMES.filter(h => h.beach === b.id);
+  const groups = b.communities.map(c => {
+    const homes = ORDERED.filter(h => h.beach === b.id && h.comm === c.name);
+    if (!homes.length) return "";
+    /* odd counts: lead with one wide card so no card sits alone in a row */
+    const html = homes.map((h,i) => card(h, homes.length % 2 === 1 && i === 0)).join("");
+    return `<div class="community">
+      <div class="community-head"><h3>${esc(c.name)}</h3><p>${esc(c.note)}</p></div>
+      <div class="grid">${html}</div>
+    </div>`;
+  }).join("");
+  return `<section class="beach" id="${b.id}" aria-labelledby="${b.id}-h">
+    <div class="wrap">
+      <div class="chapter">
+        <div>
+          <span class="label section-label">${list.length} homes · ${rangeOf(list)}</span>
+          <h2 id="${b.id}-h">${b.name}</h2>
+        </div>
+        <div>
+          <p>${esc(b.intro)}</p>
+          <dl class="facts">
+            <div><dt class="label">Feel</dt><dd>${esc(b.feel)}</dd></div>
+            <div><dt class="label">To LIR airport</dt><dd>${esc(b.lir)}</dd></div>
+          </dl>
+        </div>
+      </div>
+      ${groups}
+      <p class="empty" hidden>No homes in this area match the filter.</p>
+    </div>
+  </section>`;
+}).join("");
+
+/* filters */
+const buttons = document.querySelectorAll(".show button");
+buttons.forEach(btn => btn.addEventListener("click", () => {
+  const f = btn.dataset.f;
+  buttons.forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+  document.querySelectorAll(".card").forEach(c => {
+    c.hidden = f === "walk" ? c.dataset.walk !== "true" : f === "under" ? c.dataset.under !== "true" : false;
+  });
+  document.querySelectorAll(".community").forEach(g => { g.hidden = !g.querySelector(".card:not([hidden])"); });
+  document.querySelectorAll(".beach").forEach(s => { s.querySelector(".empty").hidden = !!s.querySelector(".card:not([hidden])"); });
+}));
+</script>
+</body>
+</html>
